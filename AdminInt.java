@@ -178,14 +178,10 @@ public class AdminInt{
 			try{
 				statement = connection.createStatement();
 			
-				//query = "SELECT salutation, first_name, last_name FROM (Reservation R NATURAL JOIN Reservation_detail D) NATURAL JOIN Customer C WHERE D.flight_number = "+flightNum+" AND D.flight_date = to_date('"+flightDate+"','MM/DD/YYYY') AND R.ticketed = '1'";
-				query = "Select * from customer";
-				System.out.println(query);
+				query = "SELECT salutation, first_name, last_name FROM (Reservation R NATURAL JOIN Reservation_detail D) NATURAL JOIN Customer C WHERE D.flight_number = "+flightNum+" AND D.flight_date = to_date('"+flightDate+"','MM/DD/YYYY') AND R.ticketed = '1'";
 				resultSet = statement.executeQuery(query);
 				while(resultSet.next()){
-					System.out.println("I'M HERE");
-					//System.out.println("Record ["+counter+"]: "+resultSet.getString(1)+" "+resultSet.getString(2)+" "+resultSet.getString(3));
-					System.out.println(resultSet.getString(1));
+					System.out.println("Record ["+counter+"]: "+resultSet.getString(1)+" "+resultSet.getString(2)+" "+resultSet.getString(3));
 					counter++;
 				}
 			}
