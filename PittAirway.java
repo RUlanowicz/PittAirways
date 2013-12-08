@@ -28,12 +28,14 @@ public class PittAirway{
 			System.out.println("Customer [1] or Administrator [2]");
 			userType = in.nextInt();
 		}while(userType != 1 && userType !=2);
+		System.out.println(userType);
 		if(userType == 2){ 
 			AdminInt admin_int = new AdminInt(connection);
 		}
 		else if(userType == 1){
 			CustInt cust_int = new CustInt(connection);
 		}
+		
 		try{
 			connection.close();
 		}
