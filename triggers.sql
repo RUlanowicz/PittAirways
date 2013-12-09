@@ -293,3 +293,5 @@ LOOP
 END LOOP;
 END;
 /
+
+commit;

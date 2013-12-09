@@ -81,3 +81,5 @@ CREATE TABLE CDate(
 	c_date				date,
 	CONSTRAINT Date_PK PRIMARY KEY (c_date)
 );
+
+commit;

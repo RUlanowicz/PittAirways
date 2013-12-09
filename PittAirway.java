@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class PittAirway{
 	private Connection connection; //used to hold the jdbc connection to the DB
-	private String username = "rru3"; //This is your username in oracle
-	private String password = "3443113"; //This is your password in oracle
+	private String username = "zll1"; //This is your username in oracle
+	private String password = "3738028"; //This is your password in oracle
 	
 	public PittAirway(){
 		Scanner in = new Scanner(System.in);

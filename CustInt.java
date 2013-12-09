@@ -26,13 +26,13 @@ public class CustInt{
 						break;
 					case 2: showCustInfo();
 						break;
-					case 3: //findPrice();
+					case 3: findPrice();
 						break;
 					case 4:	//findRoutes();
 						break;
 					case 5: //findRoutesWSeats();
 						break;
-					case 6: //addRes();
+					case 6: addRes();
 						break;
 					case 7: //showRes();
 						break;
@@ -119,6 +119,162 @@ public class CustInt{
 	}
 	
 	private void showCustInfo(){
-		
+	}
+
+	private void findPrice() {
+
+		String cityA, cityB;
+		int highAB, highBA, lowAB, lowBA;
+		highAB = highBA = lowAB = lowBA = 0;
+
+		in.nextLine();
+
+		System.out.printf("City 1: ");
+		cityA = in.nextLine();
+
+		System.out.printf("City 2: ");
+		cityB = in.nextLine();
+
+
+		try{
+			statement = connection.createStatement();
+
+			//System.out.println("SELECT high_price, low_price FROM Price WHERE departure_city = '" + cityA + "' AND arrival_city = '" + cityB + "'");
+			resultSet = statement.executeQuery("SELECT high_price, low_price FROM Price WHERE departure_city = '" + cityA + "' AND arrival_city = '" + cityB + "'");
+			while(resultSet.next()) {
+				highAB = resultSet.getInt(1);
+				lowAB = resultSet.getInt(2);
+				System.out.println(cityA + " ==> " + cityB + " highAB: " + highAB + " lowAB: " + lowAB);
+			}
+
+			resultSet = statement.executeQuery("SELECT high_price, low_price FROM Price WHERE departure_city = '" + cityB + "' AND arrival_city = '" + cityA + "'");
+			while(resultSet.next()) {
+				highBA = resultSet.getInt(1);
+				lowBA = resultSet.getInt(2);
+				System.out.println(cityB + " ==> " + cityA + " highBA: " + highBA + " lowBA: " + lowBA);
+			}
+
+			System.out.println("Round trip high price: " + (highAB + highBA));
+			System.out.println("Round trip low price:  " + (lowAB  + lowBA));
+		}catch(SQLException SQLEx) {
+			System.out.println("SQL Exception");
+			System.out.println(SQLEx.toString());
+			SQLEx.printStackTrace();
+		}
+	}
+
+	private void addRes() {
+		int leg = 1;
+		int temp;
+		String flightDateIn, flightNumberIn, resNum = "00000";
+		boolean tryAgain;
+
+		ArrayList <String> flightNumbers = new ArrayList <String> ();
+		ArrayList <String> flightDates = new ArrayList <String> ();
+
+		in.nextLine();
+		do {
+			tryAgain = false;
+			System.out.printf("Leg: " + leg + "\n" + "Flight Number: ");
+			flightNumberIn = in.nextLine();
+			// make sure input is a valid flight number
+			try {
+				statement = connection.createStatement();
+
+				resultSet = statement.executeQuery("SELECT COUNT(*) FROM Flight WHERE flight_number = '" + flightNumberIn + "'");
+				while(resultSet.next()) {
+					if(resultSet.getInt(1) == 0) {
+						System.out.println("Not a valid Flight Number");
+						tryAgain = true;
+					}
+				}
+			}catch(SQLException SQLEx) {
+				System.out.println("SQL Exception");
+				System.out.println(SQLEx.toString());
+				SQLEx.printStackTrace();
+			}
+
+			if(tryAgain) continue;
+
+			System.out.printf("Flight Date: ");
+			flightDateIn = in.nextLine();
+
+			flightNumbers.add(flightNumberIn);
+			flightDates.add(flightDateIn);
+
+			if(flightNumberIn.compareTo("0") != 0) leg++;
+		}while(flightNumberIn.compareTo("0") != 0);
+
+		// cannot have 3 or more than 4 legs in trip
+		if(leg == 3) {
+			System.out.println("Sorry, cannot have 3 leg reservations");
+			return;
+		} else if(leg > 4) {
+			System.out.println("Sorry, you have too many legs in your reservation");
+			return;
+		}
+
+		// make sure there is room on all of the flights
+		for(int i = 0; i < flightNumbers.size(); i++) {
+			String fn = flightNumbers.get(i);
+			if(freeSeats(fn) == 0) {
+				System.out.println("Sorry, there are no seats available for flight number: " + fn);
+				System.out.println("The reservation was not made");
+				return;
+			}
+		}
+		try{		
+			do{
+				temp = (int)(Math.random() * ((99998) + 1));
+				resNum = String.format("%05d",temp);
+				resultSet = statement.executeQuery("SELECT COUNT(*) FROM Reservation WHERE Reservation_number = '"+resNum+"'");
+				resultSet.next();
+			}while(resultSet.getInt(1) >= 1);
+			System.out.println();
+			
+			
+			//statement.executeQuery("INSERT INTO Customer VALUES('"+cid+"','"+sal+"','"+fname+"','"+lname+"','"+cc_num+"',"+"to_date('"+cc_exp+"','MM/YY'),'"+sname+"','"+city+"','"+state+"','"+phone_num+"','"+email+"')");
+			//System.out.println("Customer Inserted");
+			// insert into Reservation Table
+			System.out.println("INSERT INTO Reservation(reservation_number, ticketed) VALUES('"+resNum+"', '0')");
+			resultSet = statement.executeQuery("INSERT INTO Reservation(reservation_number, ticketed) VALUES('"+resNum+"', '0')");
+
+			for(int i = 0; i < flightNumbers.size(); i++) {
+				String fn = flightNumbers.get(i);
+				leg = i + 1;
+				String fd = flightDates.get(i);
+				System.out.println("INSERT INTO Reservation_detail VALUES('"+resNum+"', '" +fn+"', to_date('"+fd+"','MM/DD/YYYY'), "+leg+")");
+				resultSet = statement.executeQuery("INSERT INTO Reservation_detail VALUES('"+resNum+"', '" +fn+"', to_date('"+fd+"','MM/DD/YYYY'), "+leg+")");
+			}
+		} catch(SQLException SQLEx){
+				System.out.println("SQL Exception");
+				System.out.println(SQLEx.toString());
+				SQLEx.printStackTrace();			
+		}
+
+		System.out.println("Reservation Number: " + resNum);
+	}
+
+	// return the free seats on a flight
+	private int freeSeats(String flightNum) {
+		int cap = 0;
+		int curSize = 0;
+		try {
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("SELECT plane_capacity FROM Plane NATURAL JOIN Flight WHERE flight_number = " + flightNum);
+			while(resultSet.next()) {
+				cap = resultSet.getInt(1);
+			}
+
+			resultSet = statement.executeQuery("SELECT COUNT(*) FROM Reservation_detail WHERE flight_number = " + flightNum);
+			while(resultSet.next()) {
+				curSize = resultSet.getInt(1);
+			}
+		}catch(SQLException SQLEx) {
+			System.out.println("SQL Exception");
+			System.out.println(SQLEx.toString());
+			SQLEx.printStackTrace();
+		}	
+		return cap - curSize;
 	}
 }
