@@ -55,7 +55,6 @@ public class AdminInt{
 				statement.addBatch("DELETE FROM Price");
 				statement.addBatch("DELETE FROM Plane");
 				statement.addBatch("DELETE FROM Customer");
-				statement.addBatch("commit");
 				statement.executeBatch();
 				statement.clearBatch();
 				System.out.println("Database Deleted");
@@ -85,7 +84,6 @@ public class AdminInt{
 					System.out.println("INSERT INTO Flight VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"','"+broken[3]+"','"+broken[4]+"','"+broken[5]+"','"+broken[6]+"')");
 					statement.addBatch("INSERT INTO Flight VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"','"+broken[3]+"','"+broken[4]+"','"+broken[5]+"','"+broken[6]+"')");
 				}
-				statement.addBatch("commit");
 				statement.executeBatch();
 				statement.clearBatch();
 				System.out.println("Schedule from "+fileName+" successfully added to database");
@@ -119,7 +117,6 @@ public class AdminInt{
 					System.out.println("INSERT INTO Price VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"','"+broken[3]+"')");
 					statement.addBatch("INSERT INTO Price VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"','"+broken[3]+"')");
 				}
-				statement.addBatch("commit");
 				statement.executeBatch();
 				statement.clearBatch();
 				System.out.println("Prices from "+fileName+" successfully added to database");
@@ -151,10 +148,9 @@ public class AdminInt{
 					if(fline.length() == 0) break;
 					String[] broken = fline.split(" ");
 					//System.out.println(Arrays.toString(broken));
-					//System.out.println("INSERT INTO Plane VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"', to_date('"+broken[3]+"','MM/DD/YYYY'),'"+broken[4]+"')");
+					System.out.println("INSERT INTO Plane VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"', to_date('"+broken[3]+"','MM/DD/YYYY'),'"+broken[4]+"')");
 					statement.addBatch("INSERT INTO Plane VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"', to_date('"+broken[3]+"','MM/DD/YYYY'),'"+broken[4]+"')");
 				}
-				statement.addBatch("commit");
 				statement.executeBatch();
 				statement.clearBatch();
 				System.out.println("Planes from "+fileName+" successfully added to database");
