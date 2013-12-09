@@ -34,6 +34,7 @@ public class PittAirway{
 		else if(userType == 1){
 			CustInt cust_int = new CustInt(connection);
 		}
+		
 		try{
 			connection.close();
 		}

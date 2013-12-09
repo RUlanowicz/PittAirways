@@ -148,7 +148,7 @@ public class AdminInt{
 					if(fline.length() == 0) break;
 					String[] broken = fline.split(" ");
 					//System.out.println(Arrays.toString(broken));
-					System.out.println("INSERT INTO Plane VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"', to_date('"+broken[3]+"','MM/DD/YYYY'),'"+broken[4]+"')");
+					//System.out.println("INSERT INTO Plane VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"', to_date('"+broken[3]+"','MM/DD/YYYY'),'"+broken[4]+"')");
 					statement.addBatch("INSERT INTO Plane VALUES('"+broken[0]+"','"+broken[1]+"','"+broken[2]+"', to_date('"+broken[3]+"','MM/DD/YYYY'),'"+broken[4]+"')");
 				}
 				statement.executeBatch();
