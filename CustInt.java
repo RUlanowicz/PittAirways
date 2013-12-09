@@ -119,6 +119,7 @@ public class CustInt{
 	}
 	
 	private void showCustInfo(){
+<<<<<<< HEAD
 	}
 
 	private void findPrice() {
@@ -276,5 +277,36 @@ public class CustInt{
 			SQLEx.printStackTrace();
 		}	
 		return cap - curSize;
+=======
+		String fname, lname;
+		in.nextLine();
+		System.out.printf("\nFirst Name: ");
+		fname = in.nextLine();
+		System.out.printf("Last Name: ");
+		lname = in.nextLine();
+		try{
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE first_name = '"+fname+"' AND last_name = '"+lname+"'");
+			resultSet.next();
+			if(resultSet.getInt(1) >= 1){
+				resultSet = statement.executeQuery("SELECT * FROM CUSTOMER WHERE first_name = '"+fname+"' AND last_name = '"+lname+"'");
+				System.out.println();
+				resultSet.next();
+				System.out.println("PittRewards #: "+resultSet.getString(1));
+				System.out.println("Name: "+resultSet.getString(2)+" "+resultSet.getString(3)+" "+resultSet.getString(4));
+				System.out.println("Payment Info: "+resultSet.getString(5)+" Expires: "+resultSet.getString(6).substring(0,7));
+				System.out.println("Billing Address: "+resultSet.getString(7)+" "+resultSet.getString(8)+", "+resultSet.getString(9));
+				System.out.println("Contact: "+resultSet.getString(10)+" "+resultSet.getString(11));
+			}
+			else{
+				System.out.println("That name doesn't exist, press 1 to become a registered user!");
+			}
+		}
+		catch(SQLException SQLEx){
+			System.out.println("SQL Exception");
+			System.out.println(SQLEx.toString());
+			SQLEx.printStackTrace();
+		}
+>>>>>>> c86c1c4119c962138955aec880d5b8341a692ac8
 	}
 }
