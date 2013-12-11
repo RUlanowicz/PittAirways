@@ -1,3 +1,10 @@
+/*
+Written By
+Zach Liss - zll1@pitt.edu
+Ryan Ulanowicz - rru3@pitt.edu
+12/10/2013
+*/
+
 import java.sql.*;
 import java.util.*;
 import java.io.*;
@@ -31,24 +38,23 @@ public class AdminInt{
 						break;
 					case 5: generateManifest();
 						break;
-					case 0: System.out.println("Good Bye!");
+					case 0: System.out.println("Good Bye From Group One!");
 						break;
 				}
 			}while(selection != 0);
 		}
 		
-		
+		//removes all tupples without dropping tables (Task 1)
 		private void eraseDB(){
 			int dec;
 			do{
 				System.out.println("Are you sure that you want to delete ALL data, enter 1 to DELETE press 0 for NO");
 				dec = in.nextInt();
 			}while(dec != 0 && dec != 1);
-			//System.out.println("HEY");
 			if(dec == 0) return;
 			try{
 				statement = connection.createStatement();
-				statement.addBatch("DELETE FROM CDate");
+				statement.addBatch("DELETE FROM our_sys_time");
 				statement.addBatch("DELETE FROM Reservation_detail");
 				statement.addBatch("DELETE FROM Reservation");
 				statement.addBatch("DELETE FROM Flight");
@@ -67,6 +73,7 @@ public class AdminInt{
 			
 		}
 		
+		//parses in a text file and loads data into Flight table (Task 2)
 		private void loadSchedule(){
 			String fileName;
 			System.out.println("What is the name of the file containing the schedule?");
@@ -100,6 +107,7 @@ public class AdminInt{
 			}
 		}
 		
+		//parses in a text file and loads data into Price table (Task 3)
 		private void loadPrice(){
 			String fileName;
 			System.out.println("What is the name of the file containing the price data?");
@@ -133,6 +141,7 @@ public class AdminInt{
 			}
 		}
 		
+		//parses in a text file and loads data into Plane table (Task 4)
 		private void loadPlane(){
 			String fileName;
 			System.out.println("What is the name of the file containing the plane data?");
@@ -167,6 +176,7 @@ public class AdminInt{
 			}
 		}
 		
+		//generates a passenger manifest based on a flight number and data (Task 5)
 		private void generateManifest(){
 			int flightNum;
 			String flightDate;
